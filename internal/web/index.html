@@ -1,0 +1,70 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Claims Client</title>
+    <style>
+      body { font-family: system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif; margin: 2rem; }
+      .card { padding: 1rem; border: 1px solid #ddd; border-radius: 12px; max-width: 560px; }
+      label { display:block; margin-top: .5rem; }
+      input { width: 100%; padding: .5rem; margin-top: .25rem; }
+      button { margin-top: 1rem; padding: .6rem 1rem; border-radius: 8px; border: 1px solid #333; background:#111; color:#fff; cursor:pointer; }
+      pre { background:#f7f7f7; padding:1rem; border-radius: 8px; overflow:auto; }
+    </style>
+  </head>
+  <body>
+    <h1>Claims Web Client</h1>
+    <div class="card">
+      <h2>Login</h2>
+      <label>Username <input id="username" value="demo" /></label>
+      <label>Password <input id="password" type="password" value="demo" /></label>
+      <button id="loginBtn">Login</button>
+      <p id="loginStatus"></p>
+    </div>
+
+    <div class="card" style="margin-top:1rem;">
+      <h2>Get Claim</h2>
+      <label>Claim ID <input id="claimId" value="1001" /></label>
+      <button id="getBtn">Fetch Claim</button>
+      <pre id="result"></pre>
+    </div>
+
+    <script>
+      const API = "http://localhost:8080";
+      let token = null;
+
+      document.getElementById('loginBtn').onclick = async () => {
+        const res = await fetch(`${API}/login`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            username: document.getElementById('username').value,
+            password: document.getElementById('password').value,
+          })
+        });
+        if (!res.ok) {
+          document.getElementById('loginStatus').textContent = 'Login failed';
+          token = null;
+          return;
+        }
+        const data = await res.json();
+        token = data.token;
+        document.getElementById('loginStatus').textContent = 'Logged in. Token acquired.';
+      };
+
+      document.getElementById('getBtn').onclick = async () => {
+        if (!token) {
+          alert('Please login first.');
+          return;
+        }
+        const id = document.getElementById('claimId').value;
+        const res = await fetch(`${API}/claims/${id}`, {
+          headers: { 'Authorization': `Bearer ${token}` }
+        });
+        const txt = await res.text();
+        document.getElementById('result').textContent = `${res.status} ${res.statusText}\n\n${txt}`;
+      };
+    </script>
+  </body>
+</html>

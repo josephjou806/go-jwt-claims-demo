@@ -1,0 +1,17 @@
+# Binaries
+*.exe
+*.exe~
+*.dll
+*.so
+*.dylib
+*.test
+*.out
+bin/
+
+# IDE
+.vscode/
+.idea/
+.DS_Store
+
+# Coverage
+coverage.*
