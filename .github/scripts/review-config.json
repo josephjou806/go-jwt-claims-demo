@@ -1,0 +1,60 @@
+{
+  "review": {
+    "maxFilesPerReview": 10,
+    "maxCharsPerFile": 8000,
+    "excludePatterns": [
+      "go.sum",
+      "*.generated.go",
+      "vendor/",
+      ".git/",
+      "node_modules/",
+      "*.min.js",
+      "*.min.css"
+    ],
+    "focusAreas": [
+      "Security vulnerabilities and best practices",
+      "Performance optimizations", 
+      "Code maintainability and readability",
+      "Go idioms and conventions",
+      "Error handling patterns",
+      "Testing coverage and quality",
+      "Documentation completeness",
+      "API design consistency",
+      "Memory safety and resource management",
+      "Concurrency safety",
+      "JWT token security",
+      "CORS configuration",
+      "Input validation",
+      "SQL injection prevention",
+      "Dependency management"
+    ],
+    "severityLevels": {
+      "high": {
+        "keywords": ["security", "vulnerability", "injection", "auth", "token", "password", "secret"],
+        "description": "Critical issues that must be fixed before merge"
+      },
+      "medium": {
+        "keywords": ["performance", "memory", "goroutine", "deadlock", "race"],
+        "description": "Important issues that should be addressed"
+      },
+      "low": {
+        "keywords": ["style", "naming", "comment", "documentation"],
+        "description": "Minor improvements and suggestions"
+      }
+    }
+  },
+  "claude": {
+    "model": "claude-3-5-sonnet-20241022",
+    "maxTokens": 4000,
+    "temperature": 0.1
+  },
+  "github": {
+    "commentPrefix": "🤖 AI Code Review by Claude",
+    "includeLineNumbers": true,
+    "tagUsers": [],
+    "labels": {
+      "addOnIssues": ["needs-review"],
+      "removeOnApproval": ["needs-review"]
+    }
+  }
+}

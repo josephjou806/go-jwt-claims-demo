@@ -1,0 +1,57 @@
+name: Manual AI Code Review
+
+on:
+  workflow_dispatch:
+    inputs:
+      pr_number:
+        description: 'PR number to review'
+        required: true
+        type: string
+      focus_area:
+        description: 'Specific area to focus on'
+        required: false
+        type: choice
+        default: 'general'
+        options:
+          - general
+          - security
+          - performance
+          - testing
+          - documentation
+
+permissions:
+  contents: read
+  pull-requests: write
+  issues: write
+
+jobs:
+  manual-ai-review:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+      with:
+        fetch-depth: 0
+        
+    - name: Setup Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: '20'
+        
+    - name: Install dependencies
+      run: |
+        cd .github/scripts
+        npm install
+        
+    - name: Run Manual AI Review
+      env:
+        ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        PR_NUMBER: ${{ github.event.inputs.pr_number }}
+        FOCUS_AREA: ${{ github.event.inputs.focus_area }}
+        REPO_OWNER: ${{ github.repository_owner }}
+        REPO_NAME: ${{ github.event.repository.name }}
+      run: |
+        cd .github/scripts
+        node claude-review.js

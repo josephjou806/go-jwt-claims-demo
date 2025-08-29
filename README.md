@@ -100,6 +100,22 @@ Response:
   "fillDate": "2025-01-15T12:00:00Z"
 }
 
+## 🤖 AI Code Review
+
+This repository includes an automated AI code review process using Claude AI and GitHub workflows. The AI reviewer provides detailed feedback on:
+
+- **Security**: JWT handling, input validation, CORS configuration
+- **Performance**: Memory usage, goroutine management, optimization opportunities  
+- **Code Quality**: Go idioms, error handling, testing coverage
+- **Best Practices**: Documentation, API design, maintainability
+
+### Quick Setup
+1. Get an [Anthropic API key](https://console.anthropic.com/)
+2. Add it as `ANTHROPIC_API_KEY` in repository secrets
+3. Create a pull request to trigger automatic review
+
+For detailed setup instructions, see [AI_CODE_REVIEW_SETUP.md](AI_CODE_REVIEW_SETUP.md).
+
 License
 
 MIT

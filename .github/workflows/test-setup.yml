@@ -1,0 +1,139 @@
+name: Test AI Review Setup
+
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - '.github/workflows/**'
+      - '.github/scripts/**'
+    branches: [main]
+
+jobs:
+  test-setup:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+      
+    - name: Setup Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: '20'
+        
+    - name: Test script dependencies
+      run: |
+        cd .github/scripts
+        npm install
+        echo "✅ Dependencies installed successfully"
+        
+    - name: Test configuration files
+      run: |
+        echo "Testing configuration files..."
+        
+        # Check if config files exist
+        if [ -f ".github/scripts/review-config.json" ]; then
+          echo "✅ review-config.json exists"
+        else
+          echo "❌ review-config.json missing"
+          exit 1
+        fi
+        
+        if [ -f ".github/scripts/package.json" ]; then
+          echo "✅ package.json exists"
+        else
+          echo "❌ package.json missing"
+          exit 1
+        fi
+        
+        if [ -f ".github/scripts/claude-review.js" ]; then
+          echo "✅ claude-review.js exists"
+        else
+          echo "❌ claude-review.js missing"
+          exit 1
+        fi
+        
+    - name: Validate JSON files
+      run: |
+        echo "Validating JSON configuration..."
+        cd .github/scripts
+        
+        # Validate package.json
+        if node -e "JSON.parse(require('fs').readFileSync('package.json', 'utf8'))"; then
+          echo "✅ package.json is valid JSON"
+        else
+          echo "❌ package.json is invalid JSON"
+          exit 1
+        fi
+        
+        # Validate review-config.json
+        if node -e "JSON.parse(require('fs').readFileSync('review-config.json', 'utf8'))"; then
+          echo "✅ review-config.json is valid JSON"
+        else
+          echo "❌ review-config.json is invalid JSON"
+          exit 1
+        fi
+        
+    - name: Test Node.js script syntax
+      run: |
+        echo "Testing Node.js script syntax..."
+        cd .github/scripts
+        
+        # Check if the script has valid syntax
+        if node -c claude-review.js; then
+          echo "✅ claude-review.js has valid syntax"
+        else
+          echo "❌ claude-review.js has syntax errors"
+          exit 1
+        fi
+        
+    - name: Check environment variables setup
+      run: |
+        echo "Checking required environment variables..."
+        
+        # Note: We can't test the actual values for security reasons
+        # but we can check if the secrets are expected to be set
+        echo "Expected secrets:"
+        echo "- ANTHROPIC_API_KEY (should be set in repository secrets)"
+        echo "- GITHUB_TOKEN (automatically provided by GitHub)"
+        
+        echo "✅ Environment variables check completed"
+        
+    - name: Test workflow files
+      run: |
+        echo "Checking workflow files..."
+        
+        if [ -f ".github/workflows/code-review.yml" ]; then
+          echo "✅ code-review.yml exists"
+        else
+          echo "❌ code-review.yml missing"
+          exit 1
+        fi
+        
+        if [ -f ".github/workflows/manual-review.yml" ]; then
+          echo "✅ manual-review.yml exists"
+        else
+          echo "❌ manual-review.yml missing"
+          exit 1
+        fi
+        
+        echo "✅ All workflow files are present"
+        
+    - name: Setup summary
+      run: |
+        echo "🎉 AI Code Review Setup Test Completed Successfully!"
+        echo ""
+        echo "📋 Setup Status:"
+        echo "✅ Node.js dependencies are installable"
+        echo "✅ Configuration files are valid"
+        echo "✅ Script syntax is correct"
+        echo "✅ Workflow files are present"
+        echo ""
+        echo "🔧 Next Steps:"
+        echo "1. Add ANTHROPIC_API_KEY to repository secrets"
+        echo "2. Create a test pull request to trigger the review"
+        echo "3. Check the review comment on the PR"
+        echo ""
+        echo "📚 Documentation:"
+        echo "- See AI_CODE_REVIEW_SETUP.md for complete setup instructions"
+        echo "- See .github/scripts/README.md for technical details"

@@ -1,0 +1,24 @@
+# Exclude common patterns
+node_modules/
+*.log
+*.tmp
+.env
+.env.local
+
+# Exclude generated files
+go.sum
+*.generated.go
+
+# Exclude vendor directory
+vendor/
+
+# Exclude IDE files
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Exclude build artifacts
+bin/
+dist/
+build/
